@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Rifa do valdir</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body data-page="Administração">
+
+    <!-- Breadcrumbs: caminho da navegação (canto esquerdo) -->
+    <div class="container mt-5 pt-1">
+        <div id="breadcrumbs" class="breadcrumb-path small text-muted"></div>
+    </div>
+
+    <div id="painel-login">
+        <h3 class="text-center mb-4">Acesso Restrito</h3>
+        <div class="mb-3">
+            <label>Usuário:</label>
+            <input type="text" id="loginUser" class="form-control" placeholder="admin">
+        </div>
+        <div class="mb-3">
+            <label>Senha:</label>
+            <input type="password" id="loginPass" class="form-control" placeholder="1234">
+        </div>
+        <button class="btn btn-primary w-100" onclick="fazerLogin()">Entrar</button>
+        <p class="mt-3 text-center"><a href="index.html">Voltar para a Loja</a></p>
+    </div>
+
+    <div id="painel-admin" style="display: none;">
+        <div class="d-flex">
+            <aside class="admin-sidebar p-4">
+                <div class="logo-container mb-3" style="padding:10px; border-radius:8px;">
+                    <img id="admin-logo" src="img/logo.png" alt="logo" style="max-width:160px; display:block; margin:0 auto;">
+                </div>
+                <nav class="nav flex-column">
+                    <div>
+                        <button class="btn btn-link text-start" onclick="mostrarView('dashboard')"><i class="bi bi-speedometer2 me-2"></i>Painel</button>
+                        <button class="btn btn-link text-start" onclick="mostrarView('produtos')"><i class="bi bi-box-seam me-2"></i>Editar Produtos</button>
+                        <button class="btn btn-link text-start" onclick="mostrarView('criar')"><i class="bi bi-plus-circle me-2"></i>Criar Produto</button>
+                        <button class="btn btn-link text-start" onclick="mostrarView('analises')"><i class="bi bi-bar-chart-line me-2"></i>Análises</button>
+                        <button class="btn btn-link text-start" onclick="mostrarView('pagina')"><i class="bi bi-house me-2"></i>Página Inicial</button>
+                    </div>
+                </nav>
+                <div class="mt-auto pt-3"><button class="btn btn-outline-dark btn-sm" onclick="sair()"><i class="bi bi-box-arrow-left me-1"></i>Sair</button></div>
+            </aside>
+
+            <section class="admin-content p-4 flex-grow-1">
+                <!-- Dashboard -->
+                    <div id="view-dashboard" class="admin-view">
+                    <h4>Painel</h4>
+                    <p class="text-muted">Bem-vindo administrador! Por aqui você gerencia os produtos da sua loja - edite, crie e exclua de acordo com suas necessidades.</p>
+                </div>
+
+                <!-- Lista / Edição de Produtos -->
+                <div id="view-produtos" class="admin-view" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5>Editor de produtos</h5>
+                        <div>
+                            <input id="search-produtos" class="form-control form-control-sm" placeholder="Pesquisar produto..." style="width:240px; display:inline-block;" />
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mb-3">
+                        <table class="table table-borderless bg-white rounded shadow-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width:30px;"><input type="checkbox" id="check-all" /></th>
+                                    <th>Produto</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Preço</th>
+                                    <th style="width:140px;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-tabela-produtos"></tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div><button class="btn btn-danger btn-sm" onclick="deletarSelecionados()">Excluir selecionados</button></div>
+                        <div id="paginacao-admin"></div>
+                    </div>
+                </div>
+
+                <!-- Criar Produto -->
+                <div id="view-criar" class="admin-view" style="display:none;">
+                    <h5>Adição de produtos</h5>
+                    <p>Dê vida ao seu site, adicione seus produtos!</p>
+                    <div class="card p-4 bg-white rounded shadow-sm">
+                        <div class="row">
+                            <div class="col-md-5 text-center">
+                                <div id="preview-upload" style="width:100%; height:220px; background:#f6f6f6; border-radius:8px; display:flex; align-items:center; justify-content:center;">Pré-visualização</div>
+                                <div class="mt-2">
+                                    <input type="file" id="input-upload" accept="image/*" />
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <form id="form-criar" onsubmit="salvarProduto(event)">
+                                    <div class="mb-2"><label>Nome do produto</label><input id="novoNome" class="form-control" required></div>
+                                    <div class="mb-2"><label>Descrição</label><textarea id="novoDesc" class="form-control" rows="3"></textarea></div>
+                                    <div class="mb-2"><label>Categoria</label>
+                                        <div class="d-flex gap-2">
+                                            <input id="novoCat" class="form-control" placeholder="ex: roupas" />
+                                            <button type="button" class="btn btn-outline-secondary" onclick="adicionarCategoria()">Adicionar</button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2"><label>Preço (R$)</label><input id="novoPreco" type="number" step="0.01" class="form-control" required></div>
+                                    <div class="d-flex justify-content-end"><button class="btn btn-primary">Criar</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Análises -->
+                <div id="view-analises" class="admin-view" style="display:none;">
+                    <h5>Análise</h5>
+                    <p class="text-muted">Veja aqui a análise da sua loja!</p>
+                    <div class="row gy-3">
+                        <div class="col-md-6"><div class="card p-3"><canvas id="chart-visitas"></canvas></div></div>
+                        <div class="col-md-6"><div class="card p-3"><canvas id="chart-mais-cliques"></canvas></div></div>
+                        <div class="col-md-6"><div class="card p-3"><canvas id="chart-finalizacoes"></canvas></div></div>
+                        <div class="col-md-6"><div class="card p-3"><canvas id="chart-visao-meses"></canvas></div></div>
+                    </div>
+                </div>
+
+                <!-- Página Inicial Editor -->
+                <div id="view-pagina" class="admin-view" style="display:none;">
+                    <h5>Página inicial</h5>
+                    <p class="text-muted">Edite as fotos do banner e categorias</p>
+                    <div class="card p-3 bg-white rounded shadow-sm">
+                        <div class="mb-3">
+                            <label>Banners atuais</label>
+                            <div id="banners-list" class="d-flex gap-2 flex-wrap"></div>
+                            <div class="mt-2">
+                                <input type="file" id="input-banner" accept="image/*" />
+                                <button class="btn btn-sm btn-primary ms-2" onclick="adicionarBanner()">Adicionar Banner</button>
+                            </div>
+                        </div>
+                        <hr />
+                        <div>
+                            <label>Categorias</label>
+                            <div id="categoria-list-admin" class="d-flex gap-2 flex-wrap mt-2"></div>
+                            <hr />
+                            <div>
+                                <label>Logo da marca (PNG)</label>
+                                <div class="d-flex align-items-center gap-2 mt-2">
+                                    <div id="logo-preview" style="width:120px; height:60px; background:#fff; display:flex; align-items:center; justify-content:center; border-radius:6px; overflow:hidden;"></div>
+                                    <div>
+                                        <input type="file" id="input-logo" accept="image/png, image/*" />
+                                        <div class="mt-2"><button class="btn btn-sm btn-primary" onclick="adicionarLogo()">Salvar Logo</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+    <script src="js/dados.js"></script>
+    <script src="js/notificacoes.js"></script>
+    <script src="js/adm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/breadcrumb.js"></script>
+
+        <!-- Modal de edição de produto -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Produto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <form id="form-editar" onsubmit="salvarEdicaoProduto(event)">
+                        <div class="modal-body">
+                            <input type="hidden" id="editId">
+                            <div class="row">
+                                <div class="col-md-5 text-center">
+                                    <div id="edit-preview" style="width:100%; height:260px; background:#f6f6f6; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;">Pré-visualização</div>
+                                    <div class="mt-2">
+                                        <input type="file" id="edit-image-input" accept="image/*" />
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="mb-2"><label>Nome do produto</label><input id="editNome" class="form-control" required></div>
+                                    <div class="mb-2"><label>Descrição</label><textarea id="editDesc" class="form-control" rows="4"></textarea></div>
+                                    <div class="mb-2"><label>Categoria</label><input id="editCat" class="form-control" /></div>
+                                    <div class="mb-2"><label>Preço (R$)</label><input id="editPreco" type="number" step="0.01" class="form-control" required></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
