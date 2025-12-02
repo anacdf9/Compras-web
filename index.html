@@ -6,39 +6,114 @@
     <title>Minha Loja - Catálogo</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Assistant:wght@300;400;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/estilo.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
-<body>
+<body data-page="Início">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="#"> Rifa do Valdir</a>
-            
-            <button class="btn btn-outline-dark position-relative ms-auto order-lg-last" data-bs-toggle="modal" data-bs-target="#modalCarrinho">
-                <i class="bi bi-cart-fill"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cont-carrinho">0</span>
-            </button>
+            <form class="mx-auto navbar-search" role="search" onsubmit="buscar(); return false;">
+                <div class="input-group">
+                    <button class="input-group-text btn" id="basic-addon1" type="button" aria-label="Buscar" onclick="buscar()"><i class="bi bi-search search-icon-inside" aria-hidden="true"></i></button>
+                    <input id="pesquisa" class="form-control" type="search" placeholder="Buscar produtos" aria-label="Buscar">
+                </div>
+            </form>
+
+            <div class="nav-icons ms-auto order-lg-last">
+                <a href="carrinho.html" class="btn btn-outline-dark position-relative">
+                    <i class="bi bi-cart-fill"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cont-carrinho">0</span>
+                </a>
+                <button id="btn-usuario" class="btn btn-outline-dark ms-2" title="Entrar / Cadastro" aria-label="Usuário">
+                    <i class="bi bi-person-circle"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <header id="banner-topo" class="container-fluid p-0 mt-5 pt-3">
-        <img src="img/banners/banner-padrao.jpg" class="d-block w-100" style="height: 300px; object-fit: cover;" alt="Banner">
+    <!-- Breadcrumbs: caminho da navegação (canto esquerdo) -->
+    <div class="container mt-5 pt-1">
+        <div id="breadcrumbs" class="breadcrumb-path small text-muted"></div>
+    </div>
+
+    <header id="banner-topo" class="container-fluid p-0 mt-5 pt-3" style="background:#b7b7b7;">
+        <div id="carouselBanners" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" id="carousel-inner">
+                <!-- Slides gerados por JS -->
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselBanners" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselBanners" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+        </div>
     </header>
 
-    <div class="container mt-4 text-center">
-        <h4>Categorias</h4>
-        <div class="btn-group" role="group" id="filtros-categoria">
-            <button type="button" class="btn btn-secondary active" onclick="filtrar('todos')">Todos</button>
-            <button type="button" class="btn btn-outline-secondary" onclick="filtrar('brincos')">Alimentos</button>
-            <button type="button" class="btn btn-outline-secondary" onclick="filtrar('colares')">Roupas</button>
-        </div>
+    <!-- Conteúdo principal (para aplicar blur quando popup ativo) -->
+    <div id="page-wrap">
+
+    <!-- Área de categorias com ícones -->
+    <div class="container mt-4 text-center" id="area-categorias">
+        <!-- As categorias serão geradas via JS -->
     </div>
 
     <div class="container mt-5 mb-5">
-        <h3 class="text-center mb-4">Produtos em Destaque</h3>
-        <div class="row" id="vitrine-produtos">
+        <h3 class="text-center mb-4">Produtos</h3>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card filtro-card p-3 mb-4">
+                    <h5>Filtro</h5>
+                    <div id="sidebar-filtros">
+                        <!-- Filtros gerados por JS -->
+                    </div>
+                </div>
             </div>
+            <div class="col-md-9">
+                <div class="row" id="vitrine-produtos">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seleção aleatória por categoria (abaixo das categorias) -->
+    <div class="container mt-2 mb-5" id="selecionados-container">
+        <h5 class="mb-3">Você pode gostar</h5>
+        <div class="row" id="selecionados-produtos"></div>
+    </div>
+
+    </div> <!-- /page-wrap -->
+
+    <!-- POP-UP de entrada / cadastro rápido -->
+    <div id="popup-entrada" class="popup-entrada" aria-hidden="true">
+        <div class="popup-card">
+            <h2 class="popup-title">BEM VINDO!!</h2>
+            <p class="popup-sub">Faça seu cadastro e desfrute de nossos produtos!</p>
+            <form id="form-entrada" onsubmit="return false;">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">NOME:</label>
+                    <input type="text" id="entradaNome" class="form-control" placeholder="Seu nome">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">TELEFONE</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-whatsapp text-success"></i></span>
+                        <input type="tel" id="entradaTel" class="form-control border-start-0" placeholder="(XX) 99999-9999">
+                    </div>
+                </div>
+                <p class="mt-1"><a href="adm.html" id="link-admin">É ADMINISTRADOR? CLIQUE AQUI</a></p>
+                <p class="popup-note">OS DADOS SERÃO UTILIZADOS PARA O ANDAMENTO DAS COMPRAS</p>
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-primary w-100" onclick="salvarEntrada()">Salvar</button>
+                    <button class="btn btn-outline-secondary w-100" onclick="fecharPopup()">Fechar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="modal fade" id="modalCarrinho" tabindex="-1">
@@ -72,6 +147,8 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/dados.js"></script>
+    <script src="js/notificacoes.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/breadcrumb.js"></script>
 </body>
 </html>

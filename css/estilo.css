@@ -1,32 +1,47 @@
 
 /* Define a fonte geral */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #eeeae6; /* tom suave de bege/creme similar ao mock */
+    color: #2b2b2b;
 }
 
 /*  Estiliza o banner principal */
 #banner-topo {
-    border-bottom: 5px solid #d4af37; /* Cor dourada para semijoias */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-bottom: 6px solid #d4af37; /* Cor dourada para semijoias */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 }
 
 /*  Ajusta os cards dos produtos */
 .card {
-    transition: transform 0.3s ease; /* Animação suave ao passar o mouse */
+    transition: transform 0.28s cubic-bezier(.2,.8,.2,1);
     border: none;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-/* Pseudo-classe :hover (Interação do mouse) */
 .card:hover {
-    transform: translateY(-5px); /* Sobe um pouquinho */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.12) !important;
 }
 
 /* Seletor Descendente: Estiliza apenas o preço dentro do corpo do card */
 .card-body .text-primary {
-    font-size: 1.2rem;
-    color: #d4af37 !important; /* Força a cor dourada */
+    font-size: 1.15rem;
+    color: #cf9f34 !important; /* dourado mais suave */
+}
+
+/* Badge de destaque */
+.badge-destaque {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg,#d4af37,#cf9f34);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
 /* Estilização do Menu Admin (Login) */
@@ -38,8 +53,68 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
+/* Estilização da Sidebar Admin */
+.admin-sidebar {
+    padding: 1.4rem 1rem;
+    background-color: #e1ddd5; /* cor solicitada pelo usuário */
 
-/* Botão Flutuante do WhatsApp (Opcional, mas fica ótimo) */
+/* Navbar: maior campo de busca e espaçamento entre ícones */
+.navbar-search{
+    width: 60%;
+    min-width: 280px;
+}
+.nav-icons{
+    display: flex;
+    align-items: center;
+    gap: 18px; /* espaçamento seguro entre ícones */
+}
+
+@media (max-width: 991px){
+    .navbar-search{
+        width: 70%;
+        min-width: 200px;
+    }
+    .nav-icons{ gap: 12px; }
+}
+
+/* Input group with icon inside - visual tweaks */
+.input-group .input-group-text{ background: transparent; border-right:0; }
+.input-group .form-control{ border-left:0; }
+.search-icon-inside{ color: #6c6b66; font-size: 1rem; }
+
+/* Tornar o elemento do ícone um botão limpo (sem borda) */
+.input-group .input-group-text.btn{ border: none; box-shadow: none; cursor: pointer; }
+
+    min-height: 100vh;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.8rem;
+    align-items: stretch;
+}
+
+.admin-sidebar img { max-width:140px; display:block; margin:0 auto 12px; }
+.admin-sidebar .nav { display:flex; flex-direction:column; gap:12px; }
+.admin-sidebar .nav .btn-link { color: #ffffff; text-decoration:none; font-weight:600; text-align:left; padding:8px 6px; border-radius:6px; }
+.admin-sidebar .nav .btn-link:hover { background: rgba(255,255,255,0.06); color:#fff; }
+.admin-sidebar .nav .btn-link svg, .admin-sidebar .nav .btn-link .icon { margin-right:10px; }
+.admin-sidebar .btn-outline-dark { align-self:flex-start; margin-top:18px; }
+
+/* torna o visual mais clean: ícones e texto em branco como no anexo */
+.admin-sidebar .btn-link { color: #ffffff !important; }
+
+/* Logo container no topo da sidebar */
+.logo-container {
+    background: #b7b7b7; /* cor do container do topo solicitada */
+    padding: 8px;
+    border-radius: 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
 .btn-whatsapp-float {
     position: fixed;
     bottom: 20px;
@@ -53,4 +128,202 @@ body {
     font-size: 30px;
     box-shadow: 2px 2px 3px #999;
     z-index: 100;
+}
+
+/* Pop-up de entrada */
+.popup-entrada {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.35);
+    z-index: 1050;
+}
+.popup-card {
+    background: #fffbf5;
+    padding: 28px;
+    border-radius: 18px;
+    width: 360px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+    text-align: center;
+}
+.popup-title {
+    font-family: 'Montserrat', 'Coco Gothic', sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+}
+.popup-sub {
+    font-family: 'Assistant', sans-serif;
+    margin-bottom: 14px;
+    color: #6b6b6b;
+}
+.popup-note {
+    font-family: 'Assistant', sans-serif;
+    font-size: 12px;
+    margin-top: 10px;
+    color: #5a5a5a;
+    text-transform: uppercase;
+}
+
+
+.blurred {
+    filter: blur(4px) saturate(0.98);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* animação leve em categorias e seleção */
+.categoria-item:hover img, #selecionados-produtos .card:hover img {
+    transform: scale(1.06) rotate(-1deg);
+    transition: transform 0.36s cubic-bezier(.2,.8,.2,1);
+}
+
+#selecionados-produtos .card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* esconder popup por padrão via atributo aria-hidden */
+#popup-entrada[aria-hidden="true"] { display: none; }
+
+/* Área de categorias (ícones circulares) */
+#area-categorias .categoria-list {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.categoria-item {
+    width: 120px;
+    text-align: center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+.categoria-item img {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid rgba(212,175,55,0.45);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+.categoria-item span {
+    display: block;
+    margin-top: 8px;
+    font-weight: 500;
+    font-size: 0.92rem;
+}
+
+/* Estilo para o botão circular 'Todas' */
+.categoria-item .circle-btn {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    border: 3px solid rgba(0,0,0,0.06);
+}
+
+/* Destaque visual para categoria ativa */
+.categoria-item .circle-btn.active,
+.categoria-item .categoria-img.active {
+    background: linear-gradient(135deg,#d4af37,#cf9f34);
+    color: #fff;
+    border-color: rgba(212,175,55,0.95);
+    box-shadow: 0 12px 28px rgba(212,175,55,0.12);
+}
+.categoria-item .categoria-img.active{
+    filter: saturate(1.1) contrast(1.02);
+    border: 3px solid rgba(212,175,55,0.95);
+}
+
+/* Estilo para inputs de preço no sidebar */
+.price-filter .form-control{ box-shadow:none; }
+.price-filter .btn{ font-size:0.85rem; }
+
+.filtro-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Ajustes para cards de produto na vitrine */
+.card .card-img-top {
+    background: #fff;
+}
+
+/* Botão de Comprar personalizado */
+.btn-comprar {
+    background: linear-gradient(180deg,#3a2f23,#2b2418);
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+}
+.btn-comprar:hover { filter: brightness(1.06); }
+
+/* Estilo do contador no navbar */
+.navbar .badge {
+    transform: translate(10%, -20%);
+}
+
+/* Modal carrinho mais clean */
+.modal-content { border-radius: 12px; }
+.modal-footer h4 { margin: 0; color: #2b2b2b; }
+
+/* Responsividade: ajusta grid */
+@media (max-width: 768px) {
+    .categoria-item img { width: 76px; height: 76px; }
+}
+
+/* Estilos para página de carrinho */
+.cart-items-box { min-height: 320px; }
+.cart-items-box .btn-link { padding: 0; }
+.cart-summary { position: sticky; top: 100px; }
+
+/* Ajustes visuais para o resumo do pedido */
+.cart-summary { padding: 24px; }
+.cart-summary .input-group .input-group-text { background: #fff; border-right: 0; }
+.cart-summary .form-control.border-start-0 { border-left: 0; }
+.cart-summary .btn-success { background: #25d366; border-color: #25d366; font-weight: 600; padding: 12px 16px; }
+.cart-summary .list-group-item { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.cart-summary .list-group-item strong { font-size: 0.98rem; }
+
+/* ajuste visual do breadcrumb */
+.container .text-muted { color: #7a7a7a; }
+
+/* responsividade do resumo */
+@media (max-width: 991px) {
+    .cart-summary { position: static; }
+}
+
+/* Breadcrumb (canto esquerdo) */
+.breadcrumb-path {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: #6b6b6b;
+    padding-left: 6px;
+}
+.breadcrumb-path .sep { margin: 0 6px; color: #b3b3b3; }
+.breadcrumb-path a { color: #6b6b6b; text-decoration: none; }
+.breadcrumb-path a:hover { text-decoration: underline; color: #444; }
+.breadcrumb-path .crumb-current { color: #444; font-weight:600; }
+
+/* Notificações no canto direito */
+#notificacoes-container { pointer-events: none; }
+.notificacao { pointer-events: auto; }
+.notificacao.sucesso { border-left-color: #2e7d32; }
+.notificacao.erro { border-left-color: #c62828; }
+.notificacao.info { border-left-color: #1565c0; }
+
+/* Remover caret (cursor de escrita) em elementos que não são campos de formulário
+   Isso evita que ao clicar em textos estáticos apareça o traço de escrita indesejado. */
+body *:not(input):not(textarea):not(select):not([contenteditable="true"]) {
+    caret-color: transparent !important;
 }
