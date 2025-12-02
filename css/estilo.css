@@ -1,0 +1,56 @@
+
+/* Define a fonte geral */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/*  Estiliza o banner principal */
+#banner-topo {
+    border-bottom: 5px solid #d4af37; /* Cor dourada para semijoias */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/*  Ajusta os cards dos produtos */
+.card {
+    transition: transform 0.3s ease; /* Animação suave ao passar o mouse */
+    border: none;
+}
+
+/* Pseudo-classe :hover (Interação do mouse) */
+.card:hover {
+    transform: translateY(-5px); /* Sobe um pouquinho */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
+
+/* Seletor Descendente: Estiliza apenas o preço dentro do corpo do card */
+.card-body .text-primary {
+    font-size: 1.2rem;
+    color: #d4af37 !important; /* Força a cor dourada */
+}
+
+/* Estilização do Menu Admin (Login) */
+#painel-login {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+/* Botão Flutuante do WhatsApp (Opcional, mas fica ótimo) */
+.btn-whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 100;
+}
