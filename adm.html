@@ -32,7 +32,7 @@
         <div class="d-flex">
             <aside class="admin-sidebar p-4">
                 <div class="logo-container mb-3" style="padding:10px; border-radius:8px;">
-                    <img id="admin-logo" src="img/logo.png" alt="logo" style="max-width:160px; display:block; margin:0 auto;">
+                    <img id="admin-logo" src="images/logo.png" alt="logo" style="max-width:160px; display:block; margin:0 auto;">
                 </div>
                 <nav class="nav flex-column">
                     <div>
@@ -49,7 +49,7 @@
             <section class="admin-content p-4 flex-grow-1">
                 <!-- Dashboard -->
                     <div id="view-dashboard" class="admin-view">
-                    <h4>Painel</h4>
+                    <h4>Início</h4>
                     <p class="text-muted">Bem-vindo administrador! Por aqui você gerencia os produtos da sua loja - edite, crie e exclua de acordo com suas necessidades.</p>
                 </div>
 
@@ -57,8 +57,9 @@
                 <div id="view-produtos" class="admin-view" style="display:none;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5>Editor de produtos</h5>
-                        <div>
-                            <input id="search-produtos" class="form-control form-control-sm" placeholder="Pesquisar produto..." style="width:240px; display:inline-block;" />
+                        <div class="input-group input-group-sm" style="width:280px;">
+                            <input id="search-produtos" class="form-control" placeholder="Pesquisar produto..." />
+                            <button class="btn btn-outline-secondary" id="btn-search" title="Buscar" aria-label="Buscar"><i class="bi bi-search"></i></button>
                         </div>
                     </div>
 

@@ -65,7 +65,7 @@ function inserirProduto(nome, preco, categoria, img, desc) {
         nome: nome,
         preco: preco || 0,
         categoria: categoria || 'sem-categoria',
-        img: img || 'img/produtos/exemplo.jpg',
+        img: img || 'images/produtos/exemplo.jpg',
         descricao: desc || '',
         destaque: true
     };
@@ -84,7 +84,12 @@ function initAdmin() {
     // bind search
     const s = document.getElementById('search-produtos');
     if (s) {
-        s.addEventListener('input', function(){ adminState.query = this.value.trim(); adminState.page = 1; renderAdminProdutos(); });
+        s.addEventListener('input', function(){ adminState.query = this.value; adminState.page = 1; renderAdminProdutos(); });
+        s.addEventListener('keypress', function(e){ if(e.key === 'Enter'){ e.preventDefault(); adminState.query = this.value; adminState.page = 1; renderAdminProdutos(); }});
+    }
+    const btnSearch = document.getElementById('btn-search');
+    if(btnSearch && s){
+        btnSearch.addEventListener('click', function(e){ e.preventDefault(); adminState.query = s.value; adminState.page = 1; renderAdminProdutos(); });
     }
     const inputUpload = document.getElementById('input-upload');
     if (inputUpload) inputUpload.addEventListener('change', previewUpload);
@@ -132,7 +137,7 @@ function adicionarLogo(){
 }
 
 function renderLogoSidebar(){
-    const src = localStorage.getItem('loja_logo') || 'img/logo.png';
+    const src = localStorage.getItem('loja_logo') || 'images/logo.png';
     const el = document.getElementById('admin-logo');
     if(el) el.src = src;
     const smallPrev = document.getElementById('logo-preview');
@@ -149,13 +154,30 @@ function mostrarView(name) {
     if (name === 'pagina') { renderBannersAdmin(); renderCategoriasAdmin(); }
 }
 
+function normalizarTexto(str){
+    return (str||'')
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
 function renderAdminProdutos() {
     const produtos = carregarProdutos();
     const tbody = document.getElementById('admin-tabela-produtos');
     if (!tbody) return;
-    // filter
-    const q = adminState.query.toLowerCase();
-    const filtrados = produtos.filter(p => !q || (p.nome && p.nome.toLowerCase().includes(q)) || (p.descricao && p.descricao.toLowerCase().includes(q)));
+    // filtro: usa estado para evitar DOM ausente e normaliza acentos
+    const qStr = normalizarTexto(adminState.query);
+    const filtrados = produtos.filter(p => {
+        if(!qStr) return true;
+        const nome = normalizarTexto(p.nome||'');
+        const desc = normalizarTexto(p.descricao||'');
+        const cat = normalizarTexto(p.categoria||'');
+        const precoStr = normalizarTexto(String(p.preco||''));
+        return nome.includes(qStr) || desc.includes(qStr) || cat.includes(qStr) || precoStr.includes(qStr);
+    });
     const total = filtrados.length;
     const pages = Math.max(1, Math.ceil(total / adminState.pageSize));
     if (adminState.page > pages) adminState.page = pages;
@@ -189,6 +211,24 @@ function renderAdminProdutos() {
         btn.onclick = () => { adminState.page = i; renderAdminProdutos(); };
         pag.appendChild(btn);
     }
+
+    // vincula comportamento do checkbox "selecionar tudo" após render
+    bindCheckAll();
+}
+
+function bindCheckAll(){
+    const headerCheck = document.getElementById('check-all');
+    const tbody = document.getElementById('admin-tabela-produtos');
+    if(!headerCheck || !tbody) return;
+    // reset estado visual ao render
+    headerCheck.checked = false;
+    // remove eventListener antigo substituindo por clone para evitar múltiplos binds
+    const newHeaderCheck = headerCheck.cloneNode(true);
+    headerCheck.parentNode.replaceChild(newHeaderCheck, headerCheck);
+    newHeaderCheck.addEventListener('change', function(){
+        const checks = Array.from(tbody.querySelectorAll('input[type="checkbox"][data-id]'));
+        checks.forEach(c => { c.checked = newHeaderCheck.checked; });
+    });
 }
 
 // 5. Deletar Produto

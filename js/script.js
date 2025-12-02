@@ -14,6 +14,7 @@ $(document).ready(function() {
     // 1. Carrega os produtos na tela ao iniciar
     const produtos = carregarProdutos(); // Vem do dados.js
     renderizarVitrine(produtos);
+    renderizarLogoLoja();
     renderizarCategorias(produtos);
     renderizarFiltros(produtos);
 
@@ -82,16 +83,31 @@ $(document).ready(function() {
     if(clienteTel) clienteTel.addEventListener('input', mascaraTelefone);
 });
 
+// --- LOGO DA LOJA ---
+function renderizarLogoLoja(){
+    try{
+        const logo = localStorage.getItem('loja_logo');
+        const brand = document.querySelector('.navbar .navbar-brand');
+        if(logo && brand){
+            brand.innerHTML = `<img src="${logo}" alt="logo" style="height:32px; object-fit:contain;">`;
+        }
+    } catch(e){ /* silencioso */ }
+}
+
 // --- BANNERS (carousel) ---
 function carregarBanners() {
     const padrao = [
-        'img/banners/banner-padrao.jpg',
-        'img/banners/banner-padrao.jpg',
-        'img/banners/banner-padrao.jpg'
+        'images/banners/banner-padrao.jpg',
+        'images/banners/banner-padrao.jpg',
+        'images/banners/banner-padrao.jpg'
     ];
     const salvos = localStorage.getItem('loja_banners');
     if (salvos) {
-        try { return JSON.parse(salvos); } catch(e) { return padrao; }
+        try {
+            const arr = JSON.parse(salvos);
+            if (Array.isArray(arr) && arr.length > 0) return arr;
+            return padrao;
+        } catch(e) { return padrao; }
     }
     localStorage.setItem('loja_banners', JSON.stringify(padrao));
     return padrao;
@@ -335,9 +351,17 @@ function buscar() {
 }
 
 // Renderiza blocos de categorias (ícones)
+function obterCategorias(produtos){
+    const catsProdutos = new Set(produtos.map(p => p.categoria));
+    let catsStorage = [];
+    try { catsStorage = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ catsStorage = []; }
+    const all = new Set([ ...catsStorage, ...catsProdutos ]);
+    return Array.from(all).filter(Boolean);
+}
+
 function renderizarCategorias(produtos) {
     const container = document.getElementById('area-categorias');
-    const categorias = [...new Set(produtos.map(p => p.categoria))];
+    const categorias = obterCategorias(produtos);
 
     let html = '<div class="categoria-list">';
     // 'Todas' com estado ativo quando aplicável
@@ -345,9 +369,8 @@ function renderizarCategorias(produtos) {
     html += `<div class="categoria-item"><div class="circle-btn${ativaTodos}" onclick="filtrar('todos')"><span class="fw-bold">Todas</span></div><span>Todas</span></div>`;
 
     categorias.forEach(cat => {
-        // pega uma imagem de exemplo para a categoria
         const exemplo = produtos.find(p => p.categoria === cat);
-        const img = exemplo ? exemplo.img : 'img/produtos/exemplo.jpg';
+        const img = exemplo ? exemplo.img : 'images/produtos/exemplo.jpg';
         const ativa = filtrosAtuais.categoria === cat ? ' active' : '';
         html += `
             <div class="categoria-item">
@@ -363,7 +386,7 @@ function renderizarCategorias(produtos) {
 // Renderiza filtros na sidebar (lista de categorias)
 function renderizarFiltros(produtos) {
     const container = document.getElementById('sidebar-filtros');
-    const categorias = [...new Set(produtos.map(p => p.categoria))];
+    const categorias = obterCategorias(produtos);
 
     let html = '<div class="list-group">';
     html += `<button class="list-group-item list-group-item-action ${filtrosAtuais.categoria==='todos' ? 'active' : ''}" onclick="filtrar('todos')">Todos</button>`;
