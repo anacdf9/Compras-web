@@ -85,9 +85,9 @@ $(document).ready(function() {
 // --- BANNERS (carousel) ---
 function carregarBanners() {
     const padrao = [
-        'img/banners/banner-padrao.jpg',
-        'img/banners/banner-padrao.jpg',
-        'img/banners/banner-padrao.jpg'
+        'img/banner1.png',
+        'img/banner2.png',
+        'img/banner3.png'
     ];
     const salvos = localStorage.getItem('loja_banners');
     if (salvos) {
@@ -104,7 +104,9 @@ function renderizarCarousel(banners) {
         const active = idx === 0 ? ' active' : '';
         const slide = `
             <div class="carousel-item${active}">
-                <img src="${src}" class="d-block w-100" style="height:300px; object-fit:cover;" alt="Banner ${idx+1}">
+                <div class="banner-frame">
+                    <img src="${src}" class="banner-img" alt="Banner ${idx+1}">
+                </div>
             </div>
         `;
         inner.innerHTML += slide;
@@ -187,10 +189,11 @@ function renderizarVitrine(listaProdutos) {
                 <div class="card h-100 shadow-sm position-relative">
                     ${destaqueBadge}
                     <div style="height:200px; display:flex; align-items:center; justify-content:center; padding:10px; background:linear-gradient(180deg,#faf7f4,transparent);">
+                        <a href="produto.html?id=${produto.id}" class="stretched-link" aria-label="Ver detalhes de ${produto.nome}"></a>
                         <img src="${produto.img}" class="card-img-top" alt="${produto.nome}" style="max-height: 100%; max-width:100%; object-fit:contain;">
                     </div>
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title mb-2">${produto.nome}</h5>
+                        <h5 class="card-title mb-2"><a href="produto.html?id=${produto.id}" class="text-decoration-none text-dark">${produto.nome}</a></h5>
                         <p class="card-text text-primary fw-bold mb-3">R$ ${produto.preco.toFixed(2).replace('.', ',')}</p>
                         <button class="btn btn-comprar mt-auto" onclick="adicionarAoCarrinho(${produto.id})">
                             <i class="bi bi-cart-plus me-2"></i> Comprar
