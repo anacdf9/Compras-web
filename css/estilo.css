@@ -56,9 +56,17 @@ body {
 /* Estilização da Sidebar Admin */
 .admin-sidebar {
     padding: 1.4rem 1rem;
-    background-color: #e1ddd5; /* cor solicitada pelo usuário */
+    background-color: #6f6c66; /* cor solicitada pelo usuário */
+    min-height: 100vh;
+    width: 220px;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.8rem;
+    align-items: stretch;
+}
 
-/* Navbar: maior campo de busca e espaçamento entre ícones */
 .navbar-search{
     width: 60%;
     min-width: 280px;
@@ -85,14 +93,6 @@ body {
 /* Tornar o elemento do ícone um botão limpo (sem borda) */
 .input-group .input-group-text.btn{ border: none; box-shadow: none; cursor: pointer; }
 
-    min-height: 100vh;
-    width: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 0.8rem;
-    align-items: stretch;
-}
 
 .admin-sidebar img { max-width:140px; display:block; margin:0 auto 12px; }
 .admin-sidebar .nav { display:flex; flex-direction:column; gap:12px; }

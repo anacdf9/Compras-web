@@ -18,11 +18,11 @@
         <h3 class="text-center mb-4">Acesso Restrito</h3>
         <div class="mb-3">
             <label>Usuário:</label>
-            <input type="text" id="loginUser" class="form-control" placeholder="admin">
+            <input type="text" id="loginUser" class="form-control" placeholder="">
         </div>
         <div class="mb-3">
             <label>Senha:</label>
-            <input type="password" id="loginPass" class="form-control" placeholder="1234">
+            <input type="password" id="loginPass" class="form-control" placeholder="">
         </div>
         <button class="btn btn-primary w-100" onclick="fazerLogin()">Entrar</button>
         <p class="mt-3 text-center"><a href="index.html">Voltar para a Loja</a></p>
@@ -36,8 +36,8 @@
                 </div>
                 <nav class="nav flex-column">
                     <div>
-                        <button class="btn btn-link text-start" onclick="mostrarView('dashboard')"><i class="bi bi-speedometer2 me-2"></i>Painel</button>
-                        <button class="btn btn-link text-start" onclick="mostrarView('produtos')"><i class="bi bi-box-seam me-2"></i>Editar Produtos</button>
+                        <button class="btn btn-link text-start" onclick="mostrarView('dashboard')"><i class="bi bi-speedometer2 me-2"></i>Inicio</button>
+                            <button class="btn btn-link text-start" onclick="mostrarView('produtos')"><i class="bi bi-box-seam me-2"></i>Editar Produtos</button>
                         <button class="btn btn-link text-start" onclick="mostrarView('criar')"><i class="bi bi-plus-circle me-2"></i>Criar Produto</button>
                         <button class="btn btn-link text-start" onclick="mostrarView('analises')"><i class="bi bi-bar-chart-line me-2"></i>Análises</button>
                         <button class="btn btn-link text-start" onclick="mostrarView('pagina')"><i class="bi bi-house me-2"></i>Página Inicial</button>
@@ -49,8 +49,33 @@
             <section class="admin-content p-4 flex-grow-1">
                 <!-- Dashboard -->
                     <div id="view-dashboard" class="admin-view">
-                    <h4>Painel</h4>
-                    <p class="text-muted">Bem-vindo administrador! Por aqui você gerencia os produtos da sua loja - edite, crie e exclua de acordo com suas necessidades.</p>
+                        <h4>Início</h4>
+                        <div class="card p-4 mb-4 bg-white rounded shadow-sm">
+                            <h5 class="mb-3">Bem-vindo ao Painel Administrativo!</h5>
+                            <p class="mb-2">Aqui você pode gerenciar todos os aspectos da sua loja online, desde produtos, banners, categorias, análises e muito mais.</p>
+                            <ul class="mb-3">
+                                <li>Adicione, edite e exclua produtos facilmente.</li>
+                                <li>Personalize banners e categorias para destacar ofertas.</li>
+                                <li>Acompanhe estatísticas de visitas, cliques e vendas.</li>
+                                <li>Atualize a logo da marca e mantenha sua identidade visual.</li>
+                            </ul>
+                            <p class="text-muted">Este painel foi desenvolvido para facilitar a administração do seu negócio digital. Explore as abas ao lado para começar!</p>
+                            <hr>
+                            <div class="d-flex gap-3 flex-wrap">
+                                <div class="p-3 bg-light rounded flex-fill">
+                                    <h6 class="fw-bold"><i class="bi bi-box-seam me-1"></i> Produtos</h6>
+                                    <span class="small">Gerencie o catálogo, preços e descrições.</span>
+                                </div>
+                                <div class="p-3 bg-light rounded flex-fill">
+                                    <h6 class="fw-bold"><i class="bi bi-bar-chart-line me-1"></i> Análises</h6>
+                                    <span class="small">Veja gráficos de desempenho e vendas.</span>
+                                </div>
+                                <div class="p-3 bg-light rounded flex-fill">
+                                    <h6 class="fw-bold"><i class="bi bi-house me-1"></i> Página Inicial</h6>
+                                    <span class="small">Edite banners, categorias e logo.</span>
+                                </div>
+                            </div>
+                        </div>
                 </div>
 
                 <!-- Lista / Edição de Produtos -->
@@ -99,11 +124,12 @@
                                 <form id="form-criar" onsubmit="salvarProduto(event)">
                                     <div class="mb-2"><label>Nome do produto</label><input id="novoNome" class="form-control" required></div>
                                     <div class="mb-2"><label>Descrição</label><textarea id="novoDesc" class="form-control" rows="3"></textarea></div>
-                                    <div class="mb-2"><label>Categoria</label>
-                                        <div class="d-flex gap-2">
-                                            <input id="novoCat" class="form-control" placeholder="ex: roupas" />
-                                            <button type="button" class="btn btn-outline-secondary" onclick="adicionarCategoria()">Adicionar</button>
-                                        </div>
+                                    <div class="mb-2">
+                                        <label>Categoria</label>
+                                        <select id="novoCatSelect" class="form-control" required>
+                                            <option value="" disabled selected>Selecione uma categoria</option>
+                                        </select>
+                                        <small class="text-muted">Gerencie categorias na aba "Página Inicial".</small>
                                     </div>
                                     <div class="mb-2"><label>Preço (R$)</label><input id="novoPreco" type="number" step="0.01" class="form-control" required></div>
                                     <div class="d-flex justify-content-end"><button class="btn btn-primary">Criar</button></div>
@@ -136,12 +162,17 @@
                             <div class="mt-2">
                                 <input type="file" id="input-banner" accept="image/*" />
                                 <button class="btn btn-sm btn-primary ms-2" onclick="adicionarBanner()">Adicionar Banner</button>
+                                <div id="banner-preview" style="width:160px; height:80px; margin-top:8px; background:#fff; border-radius:6px; overflow:hidden; display:flex; align-items:center; justify-content:center;"></div>
                             </div>
                         </div>
                         <hr />
                         <div>
                             <label>Categorias</label>
-                            <div id="categoria-list-admin" class="d-flex gap-2 flex-wrap mt-2"></div>
+                            <div class="d-flex gap-2 mt-2">
+                                <input id="novaCategoriaAdmin" class="form-control" placeholder="Nova categoria" />
+                                <button class="btn btn-outline-secondary" onclick="adicionarCategoria('novaCategoriaAdmin')">Adicionar</button>
+                            </div>
+                            <div id="categoria-list-admin" class="d-flex gap-2 flex-wrap mt-3"></div>
                             <hr />
                             <div>
                                 <label>Logo da marca (PNG)</label>
@@ -189,7 +220,12 @@
                                 <div class="col-md-7">
                                     <div class="mb-2"><label>Nome do produto</label><input id="editNome" class="form-control" required></div>
                                     <div class="mb-2"><label>Descrição</label><textarea id="editDesc" class="form-control" rows="4"></textarea></div>
-                                    <div class="mb-2"><label>Categoria</label><input id="editCat" class="form-control" /></div>
+                                    <div class="mb-2">
+                                        <label>Categoria</label>
+                                        <select id="editCatSelect" class="form-control" required>
+                                            <option value="" disabled selected>Selecione uma categoria</option>
+                                        </select>
+                                    </div>
                                     <div class="mb-2"><label>Preço (R$)</label><input id="editPreco" type="number" step="0.01" class="form-control" required></div>
                                 </div>
                             </div>

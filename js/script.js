@@ -337,7 +337,13 @@ function buscar() {
 // Renderiza blocos de categorias (ícones)
 function renderizarCategorias(produtos) {
     const container = document.getElementById('area-categorias');
-    const categorias = [...new Set(produtos.map(p => p.categoria))];
+    // usa categorias do localStorage se existirem, senão usa dos produtos
+    let categorias = [];
+    try { categorias = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ categorias = []; }
+    // se não houver categorias cadastradas, usa as dos produtos
+    if(categorias.length === 0){
+        categorias = [...new Set(produtos.map(p => p.categoria))];
+    }
 
     let html = '<div class="categoria-list">';
     // 'Todas' com estado ativo quando aplicável
@@ -363,7 +369,13 @@ function renderizarCategorias(produtos) {
 // Renderiza filtros na sidebar (lista de categorias)
 function renderizarFiltros(produtos) {
     const container = document.getElementById('sidebar-filtros');
-    const categorias = [...new Set(produtos.map(p => p.categoria))];
+    // usa categorias do localStorage se existirem, senão usa dos produtos
+    let categorias = [];
+    try { categorias = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ categorias = []; }
+    // se não houver categorias cadastradas, usa as dos produtos
+    if(categorias.length === 0){
+        categorias = [...new Set(produtos.map(p => p.categoria))];
+    }
 
     let html = '<div class="list-group">';
     html += `<button class="list-group-item list-group-item-action ${filtrosAtuais.categoria==='todos' ? 'active' : ''}" onclick="filtrar('todos')">Todos</button>`;

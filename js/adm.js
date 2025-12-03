@@ -33,7 +33,9 @@ function salvarProduto(event) {
     event.preventDefault();
     const nome = document.getElementById('novoNome').value.trim();
     const preco = parseFloat(document.getElementById('novoPreco').value);
-    const categoria = document.getElementById('novoCat').value.trim();
+    const categoriaSel = document.getElementById('novoCatSelect');
+    const categoria = categoriaSel ? (categoriaSel.value || '').trim() : (document.getElementById('novoCat') ? document.getElementById('novoCat').value.trim() : '');
+    if(!categoria){ showNotificacao('erro','Selecione uma categoria'); return; }
     const desc = document.getElementById('novoDesc') ? document.getElementById('novoDesc').value.trim() : '';
 
     // imagem: pode vir do input-upload (dataURL) ou de campo antigo
@@ -102,6 +104,7 @@ function initAdmin() {
     renderAdminProdutos();
     renderCategoriasAdmin();
     renderBannersAdmin();
+    renderCategoriasSelect();
 }
 
 // Logo handling
@@ -109,6 +112,11 @@ let logoPreviewData = null;
 function handleLogoPreview(e){
     const file = e.target.files[0];
     if(!file) return;
+    if(!file.type || !file.type.startsWith('image/')){
+        showNotificacao('erro','Arquivo inválido. Escolha uma imagem.');
+        e.target.value = '';
+        return;
+    }
     const reader = new FileReader();
     reader.onload = function(ev){
         logoPreviewData = ev.target.result;
@@ -119,16 +127,38 @@ function handleLogoPreview(e){
 }
 
 function adicionarLogo(){
-    if(!logoPreviewData) {
-        showNotificacao('erro', 'Escolha uma imagem PNG antes');
+    // Se já temos a preview em memória, salva direto
+    if(logoPreviewData){
+        try{
+            localStorage.setItem('loja_logo', logoPreviewData);
+            renderLogoSidebar();
+            const inputLogo = document.getElementById('input-logo'); if(inputLogo) inputLogo.value = '';
+            logoPreviewData = null;
+            if (typeof showNotificacao === 'function') showNotificacao('sucesso', 'Logo salva com sucesso!');
+            return;
+        } catch(e){ console.warn(e); showNotificacao('erro', 'Erro ao salvar logo'); return; }
+    }
+
+    // Caso a preview ainda não tenha sido preenchida (por exemplo FileReader em andamento), tente ler diretamente do input
+    const input = document.getElementById('input-logo');
+    if(input && input.files && input.files[0]){
+        const file = input.files[0];
+        if(!file.type || !file.type.startsWith('image/')){ showNotificacao('erro','Arquivo inválido. Escolha uma imagem.'); input.value = ''; return; }
+        const reader = new FileReader();
+        reader.onload = function(ev){
+            try{
+                const data = ev.target.result;
+                localStorage.setItem('loja_logo', data);
+                renderLogoSidebar();
+                input.value = '';
+                if (typeof showNotificacao === 'function') showNotificacao('sucesso', 'Logo salva com sucesso!');
+            } catch(e){ console.warn(e); showNotificacao('erro','Erro ao salvar logo'); }
+        };
+        reader.readAsDataURL(file);
         return;
     }
-    try{
-        let logoArr = logoPreviewData; // dataURL
-        localStorage.setItem('loja_logo', logoArr);
-        renderLogoSidebar();
-        if (typeof showNotificacao === 'function') showNotificacao('sucesso', 'Logo salva com sucesso!');
-    } catch(e){ console.warn(e); showNotificacao('erro', 'Erro ao salvar logo'); }
+
+    showNotificacao('erro', 'Escolha uma imagem antes');
 }
 
 function renderLogoSidebar(){
@@ -147,6 +177,7 @@ function mostrarView(name) {
     if (name === 'produtos') renderAdminProdutos();
     if (name === 'analises') renderAnalises();
     if (name === 'pagina') { renderBannersAdmin(); renderCategoriasAdmin(); }
+    if (name === 'criar') { renderCategoriasSelect(); }
 }
 
 function renderAdminProdutos() {
@@ -222,8 +253,9 @@ function abrirModalEditar(id){
     document.getElementById('editId').value = p.id;
     document.getElementById('editNome').value = p.nome || '';
     document.getElementById('editPreco').value = Number(p.preco || 0).toFixed(2);
-    document.getElementById('editCat').value = p.categoria || '';
     document.getElementById('editDesc').value = p.descricao || '';
+    // popula e seleciona categoria no select
+    renderEditCategoriaSelect(p.categoria || '');
     const preview = document.getElementById('edit-preview');
     if(preview) preview.innerHTML = `<img src="${p.img}" style="max-width:100%; max-height:100%; object-fit:contain;">`;
     const input = document.getElementById('edit-image-input'); if(input) input.value = '';
@@ -252,7 +284,8 @@ function salvarEdicaoProduto(event){
     if(!p) return showNotificacao('erro','Produto não encontrado');
     const nome = document.getElementById('editNome').value.trim();
     const preco = parseFloat(document.getElementById('editPreco').value) || 0;
-    const categoria = document.getElementById('editCat').value.trim();
+    const categoriaSel = document.getElementById('editCatSelect');
+    const categoria = categoriaSel ? (categoriaSel.value || '').trim() : '';
     const desc = document.getElementById('editDesc').value.trim();
     const input = document.getElementById('edit-image-input');
     if (input && input.files && input.files[0]) {
@@ -295,19 +328,33 @@ let bannerPreviewData = null;
 function handleBannerPreview(e){
     const file = e.target.files[0];
     if(!file) return;
+    // valida tipo de arquivo
+    if(!file.type || !file.type.startsWith('image/')){
+        showNotificacao('erro','Arquivo inválido. Escolha uma imagem.');
+        e.target.value = '';
+        return;
+    }
     const reader = new FileReader();
-    reader.onload = function(ev){ bannerPreviewData = ev.target.result; };
+    reader.onload = function(ev){ 
+        bannerPreviewData = ev.target.result;
+        // atualiza pré-visualização inline (se existir um container)
+        const prev = document.getElementById('banner-preview');
+        if(prev) prev.innerHTML = `<img src="${bannerPreviewData}" style="max-width:100%; max-height:100%; object-fit:contain; display:block;">`;
+    };
     reader.readAsDataURL(file);
 }
 
-function adicionarCategoria(){
-    const value = document.getElementById('novoCat').value.trim();
+function adicionarCategoria(inputId){
+    const input = document.getElementById(inputId || 'novoCat') || document.getElementById('novaCategoriaAdmin');
+    const value = input ? input.value.trim() : '';
     if(!value) { showNotificacao('erro','Informe o nome da categoria'); return; }
     let cats = [];
     try { cats = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ cats = []; }
     if(!cats.includes(value)) cats.push(value);
     localStorage.setItem('loja_categorias', JSON.stringify(cats));
+    if(input) input.value = '';
     renderCategoriasAdmin();
+    renderCategoriasSelect();
     if (typeof showNotificacao === 'function') showNotificacao('sucesso','Categoria adicionada');
 }
 
@@ -320,12 +367,84 @@ function renderCategoriasAdmin(){
     cats.forEach(c=>{
         const btn = document.createElement('div');
         btn.className = 'badge bg-light border p-2 rounded';
-        btn.innerHTML = `${c} <a href='#' class='ms-2 text-danger' onclick="removerCategoria('${c.replace(/'/g,'\\\'')}')">✕</a>`;
+        btn.style.color = '#2b2b2b';
+
+        // category text
+        const text = document.createTextNode(c + ' ');
+        btn.appendChild(text);
+
+        // edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-sm btn-link text-primary p-0 me-1';
+        editBtn.style.textDecoration = 'none';
+        editBtn.style.fontSize = '0.85rem';
+        editBtn.title = 'Editar';
+        editBtn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+        editBtn.addEventListener('click', function(){ editarCategoria(c); });
+        btn.appendChild(editBtn);
+
+        // remove link
+        const removeLink = document.createElement('a');
+        removeLink.href = '#';
+        removeLink.className = 'ms-1 text-danger';
+        removeLink.innerText = '✕';
+        removeLink.addEventListener('click', function(e){ e.preventDefault(); removerCategoria(c); });
+        btn.appendChild(removeLink);
+
         container.appendChild(btn);
     });
+    // mantém o select de criação sincronizado
+    renderCategoriasSelect();
+}
+
+// Preenche o <select id="novoCatSelect"> com categorias do localStorage
+function renderCategoriasSelect(){
+    const sel = document.getElementById('novoCatSelect');
+    if(!sel) return;
+    let cats = [];
+    try { cats = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ cats = []; }
+    const current = sel.value;
+    sel.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>' +
+        cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+    if(current && cats.includes(current)) sel.value = current;
+}
+
+// Preenche o select de edição com categorias e seleciona a atual
+function renderEditCategoriaSelect(categoriaAtual){
+    const sel = document.getElementById('editCatSelect');
+    if(!sel) return;
+    let cats = [];
+    try { cats = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ cats = []; }
+    sel.innerHTML = '<option value="" disabled>Selecione uma categoria</option>' +
+        cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+    if(categoriaAtual && cats.includes(categoriaAtual)) sel.value = categoriaAtual;
+}
+
+function editarCategoria(oldName){
+    const novoNome = prompt('Editar categoria:', oldName);
+    if(!novoNome || novoNome.trim() === '') return;
+    const nomeFormatado = novoNome.trim();
+    if(nomeFormatado === oldName) return;
+    let cats = [];
+    try { cats = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ cats = []; }
+    if(cats.includes(nomeFormatado) && nomeFormatado !== oldName){
+        showNotificacao('erro','Categoria já existe');
+        return;
+    }
+    const idx = cats.indexOf(oldName);
+    if(idx !== -1) cats[idx] = nomeFormatado;
+    localStorage.setItem('loja_categorias', JSON.stringify(cats));
+    // atualiza produtos que usam essa categoria
+    let produtos = carregarProdutos();
+    produtos.forEach(p=>{ if(p.categoria === oldName) p.categoria = nomeFormatado; });
+    localStorage.setItem('loja_produtos', JSON.stringify(produtos));
+    renderCategoriasAdmin();
+    renderAdminProdutos();
+    showNotificacao('sucesso','Categoria atualizada');
 }
 
 function removerCategoria(name){
+    if(!confirm(`Excluir categoria "${name}"? Os produtos dessa categoria ficarão sem categoria.`)) return;
     let cats = [];
     try { cats = JSON.parse(localStorage.getItem('loja_categorias')||'[]'); } catch(e){ cats = []; }
     cats = cats.filter(c=>c!==name);
@@ -334,14 +453,45 @@ function removerCategoria(name){
 }
 
 function adicionarBanner(){
-    if(!bannerPreviewData) { showNotificacao('erro','Escolha uma imagem antes'); return; }
-    let banners = [];
-    try { banners = JSON.parse(localStorage.getItem('loja_banners')||'[]'); } catch(e){ banners = []; }
-    banners.push(bannerPreviewData);
-    localStorage.setItem('loja_banners', JSON.stringify(banners));
-    bannerPreviewData = null;
-    document.getElementById('input-banner').value = '';
-    renderBannersAdmin();
+    // se já existe preview em memória, usa-a
+    if(bannerPreviewData){
+        try{
+            let banners = [];
+            try { banners = JSON.parse(localStorage.getItem('loja_banners')||'[]'); } catch(e){ banners = []; }
+            banners.push(bannerPreviewData);
+            localStorage.setItem('loja_banners', JSON.stringify(banners));
+            bannerPreviewData = null;
+            const inputB = document.getElementById('input-banner'); if(inputB) inputB.value = '';
+            const bp = document.getElementById('banner-preview'); if(bp) bp.innerHTML = '';
+            renderBannersAdmin();
+            if (typeof showNotificacao === 'function') showNotificacao('sucesso','Banner adicionado com sucesso!');
+            return;
+        } catch(e){ console.warn(e); showNotificacao('erro','Erro ao adicionar banner'); return; }
+    }
+
+    // caso contrário, tente ler diretamente do input (protege contra corrida do FileReader)
+    const input = document.getElementById('input-banner');
+    if(input && input.files && input.files[0]){
+        const file = input.files[0];
+        if(!file.type || !file.type.startsWith('image/')){ showNotificacao('erro','Arquivo inválido. Escolha uma imagem.'); input.value = ''; return; }
+        const reader = new FileReader();
+        reader.onload = function(ev){
+            try{
+                let banners = [];
+                try { banners = JSON.parse(localStorage.getItem('loja_banners')||'[]'); } catch(e){ banners = []; }
+                banners.push(ev.target.result);
+                localStorage.setItem('loja_banners', JSON.stringify(banners));
+                const bp = document.getElementById('banner-preview'); if(bp) bp.innerHTML = '';
+                input.value = '';
+                renderBannersAdmin();
+                if (typeof showNotificacao === 'function') showNotificacao('sucesso','Banner adicionado com sucesso!');
+            } catch(e){ console.warn(e); showNotificacao('erro','Erro ao adicionar banner'); }
+        };
+        reader.readAsDataURL(file);
+        return;
+    }
+
+    showNotificacao('erro','Escolha uma imagem antes');
 }
 
 function renderBannersAdmin(){

@@ -1,0 +1,4 @@
+Nota: Funções de categorias foram atualizadas em js/adm.js.
+- renderCategoriasSelect(): popula o <select id="novoCatSelect"> com categorias de localStorage.
+- adicionarCategoria(inputId): aceita opcionalmente um id de input; vazio mantém retrocompatibilidade.
+- salvarProduto(): usa novoCatSelect se existir.
