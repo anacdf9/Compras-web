@@ -2,14 +2,28 @@
 /* Define a fonte geral */
 body {
     font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #eeeae6; /* tom suave de bege/creme similar ao mock */
+    background-color: #eeeae6; 
     color: #2b2b2b;
 }
 
 /*  Estiliza o banner principal */
 #banner-topo {
-    border-bottom: 6px solid #d4af37; /* Cor dourada para semijoias */
+    border-bottom: 6px solid #d4af37; 
     box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* Frame e imagem do banner  */
+.banner-frame {
+    background: linear-gradient(180deg,#efefef,#e6e6e6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 420px; 
+}
+.banner-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 /*  Ajusta os cards dos produtos */
@@ -25,7 +39,7 @@ body {
     box-shadow: 0 18px 40px rgba(0,0,0,0.12) !important;
 }
 
-/* Seletor Descendente: Estiliza apenas o preço dentro do corpo do card */
+/*  Estiliza apenas o preço dentro do corpo do card */
 .card-body .text-primary {
     font-size: 1.15rem;
     color: #cf9f34 !important; /* dourado mais suave */
@@ -44,7 +58,7 @@ body {
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
-/* Estilização do Menu Admin (Login) */
+/* Estilização do login */
 #painel-login {
     max-width: 400px;
     margin: 100px auto;
@@ -65,6 +79,8 @@ body {
     justify-content: flex-start;
     gap: 0.8rem;
     align-items: stretch;
+    position: sticky;
+    top: 0; /* encosta no topo da janela */
 }
 
 .navbar-search{
@@ -85,12 +101,12 @@ body {
     .nav-icons{ gap: 12px; }
 }
 
-/* Input group with icon inside - visual tweaks */
+
 .input-group .input-group-text{ background: transparent; border-right:0; }
 .input-group .form-control{ border-left:0; }
 .search-icon-inside{ color: #6c6b66; font-size: 1rem; }
 
-/* Tornar o elemento do ícone um botão limpo (sem borda) */
+
 .input-group .input-group-text.btn{ border: none; box-shadow: none; cursor: pointer; }
 
 
@@ -101,12 +117,12 @@ body {
 .admin-sidebar .nav .btn-link svg, .admin-sidebar .nav .btn-link .icon { margin-right:10px; }
 .admin-sidebar .btn-outline-dark { align-self:flex-start; margin-top:18px; }
 
-/* torna o visual mais clean: ícones e texto em branco como no anexo */
+/* ícones e texto em branco */
 .admin-sidebar .btn-link { color: #ffffff !important; }
 
 /* Logo container no topo da sidebar */
 .logo-container {
-    background: #b7b7b7; /* cor do container do topo solicitada */
+    background: #b7b7b7; 
     padding: 8px;
     border-radius: 8px;
     display:flex;
@@ -272,7 +288,7 @@ body {
     transform: translate(10%, -20%);
 }
 
-/* Modal carrinho mais clean */
+/* Modal carrinho  */
 .modal-content { border-radius: 12px; }
 .modal-footer h4 { margin: 0; color: #2b2b2b; }
 
@@ -294,15 +310,13 @@ body {
 .cart-summary .list-group-item { display:flex; justify-content:space-between; align-items:center; gap:8px; }
 .cart-summary .list-group-item strong { font-size: 0.98rem; }
 
-/* ajuste visual do breadcrumb */
 .container .text-muted { color: #7a7a7a; }
 
-/* responsividade do resumo */
 @media (max-width: 991px) {
     .cart-summary { position: static; }
 }
 
-/* Breadcrumb (canto esquerdo) */
+
 .breadcrumb-path {
     display: flex;
     gap: 8px;
@@ -315,15 +329,14 @@ body {
 .breadcrumb-path a:hover { text-decoration: underline; color: #444; }
 .breadcrumb-path .crumb-current { color: #444; font-weight:600; }
 
-/* Notificações no canto direito */
+
 #notificacoes-container { pointer-events: none; }
 .notificacao { pointer-events: auto; }
 .notificacao.sucesso { border-left-color: #2e7d32; }
 .notificacao.erro { border-left-color: #c62828; }
 .notificacao.info { border-left-color: #1565c0; }
 
-/* Remover caret (cursor de escrita) em elementos que não são campos de formulário
-   Isso evita que ao clicar em textos estáticos apareça o traço de escrita indesejado. */
+
 body *:not(input):not(textarea):not(select):not([contenteditable="true"]) {
     caret-color: transparent !important;
 }

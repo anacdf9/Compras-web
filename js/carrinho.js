@@ -1,5 +1,4 @@
-// js/carrinho.js
-// Gerencia a página de carrinho (carrinho.html)
+
 
 function formatBRL(v) {
     return `R$ ${v.toFixed(2).replace('.', ',')}`;

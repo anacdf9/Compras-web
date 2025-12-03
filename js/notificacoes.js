@@ -1,5 +1,3 @@
-// js/notificacoes.js
-// Sistema simples de notificações no canto superior direito
 
 function criarContainerNotificacoes(){
     let c = document.getElementById('notificacoes-container');

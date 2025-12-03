@@ -328,6 +328,7 @@ let bannerPreviewData = null;
 function handleBannerPreview(e){
     const file = e.target.files[0];
     if(!file) return;
+
     // valida tipo de arquivo
     if(!file.type || !file.type.startsWith('image/')){
         showNotificacao('erro','Arquivo inválido. Escolha uma imagem.');
@@ -337,6 +338,7 @@ function handleBannerPreview(e){
     const reader = new FileReader();
     reader.onload = function(ev){ 
         bannerPreviewData = ev.target.result;
+
         // atualiza pré-visualização inline (se existir um container)
         const prev = document.getElementById('banner-preview');
         if(prev) prev.innerHTML = `<img src="${bannerPreviewData}" style="max-width:100%; max-height:100%; object-fit:contain; display:block;">`;
@@ -453,7 +455,6 @@ function removerCategoria(name){
 }
 
 function adicionarBanner(){
-    // se já existe preview em memória, usa-a
     if(bannerPreviewData){
         try{
             let banners = [];
